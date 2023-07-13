@@ -30,6 +30,14 @@ const Chat = () => {
     const [isAITyping, setIsAITyping] = useState<boolean>(false);
 
     useEffect(() => {
+        setApiMessageList(apiMessageList.concat({
+            id: chatId.current++,
+            type: 'apiMessage',
+            message: '안녕하세요 무엇을 도와드릴까요 ? 🙂'
+        }))
+    }, [])
+
+    useEffect(() => {
         setChatList([
             ...userMessageList,
             ...apiMessageList,

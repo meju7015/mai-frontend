@@ -36,3 +36,8 @@ export const createChat = async (req: ICreateChatRequest) => {
     const response = await backend.post<ICreateChatResponse>('/chat', req);
     return response.data;
 }
+
+export const createChatStream = async (req: ICreateChatRequest) => {
+    const response = await backend.post<ICreateChatResponse>('/chat/stream', req);
+    return response.data;
+}
