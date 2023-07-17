@@ -1,10 +1,22 @@
 import type {AppProps} from 'next/app';
-import {Inter} from 'next/font/google';
+import {Noto_Sans_KR, Roboto} from 'next/font/google';
 import '@/styles/global.css';
 import {ThemeProvider} from "@mui/system";
 import theme from "../../style.theme";
 import {RecoilRoot} from "recoil";
-import { Roboto, Noto_Sans_KR } from 'next/font/google';
+import {AuthProvider} from "@/@core/context/AuthContext";
+import {ReactNode} from "react";
+import GuestGuard from "@/@core/components/auth/GuestGuard";
+import AuthGuard from "@/@core/components/auth/AuthGuard";
+import {NextPage} from "next";
+import {EmotionCache} from "@emotion/react";
+import Spinner from "@/@core/components/spinner";
+
+type GuardProps = {
+    authGuard: boolean
+    guestGuard: boolean
+    children: ReactNode
+}
 
 const notoSansKr = Noto_Sans_KR({
     subsets: ['latin'],
@@ -17,16 +29,40 @@ const roboto = Roboto({
     variable: '--roboto',
 })
 
-function MyApp({Component, pageProps}: AppProps) {
+type ExtendedAppProps = AppProps & {
+    Component: NextPage
+    emotionCache: EmotionCache
+}
+
+const Guard = ({ children, authGuard, guestGuard }: GuardProps) => {
+    if (guestGuard) {
+        return <GuestGuard fallback={<Spinner />}>{children}</GuestGuard>
+    } else if (!guestGuard && !authGuard) {
+        return <>{children}</>
+    } else {
+        return <AuthGuard fallback={<Spinner />}>{children}</AuthGuard>
+    }
+}
+
+function App(props: ExtendedAppProps) {
+    const { Component, pageProps } = props;
+
+    const authGuard = Component.authGuard ?? true;
+    const guestGuard = Component.guestGuard ?? false;
+
     return (
         <RecoilRoot>
-            <ThemeProvider theme={theme}>
-                <main className={[notoSansKr.className, roboto.variable].join('')}>
-                    <Component {...pageProps} />
-                </main>
-            </ThemeProvider>
+            <AuthProvider>
+                <Guard authGuard={authGuard} guestGuard={guestGuard}>
+                    <ThemeProvider theme={theme}>
+                        <main className={[notoSansKr.className, roboto.variable].join('')}>
+                            <Component {...pageProps} />
+                        </main>
+                    </ThemeProvider>
+                </Guard>
+            </AuthProvider>
         </RecoilRoot>
     );
 }
 
-export default MyApp;
+export default App;

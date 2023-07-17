@@ -22,3 +22,7 @@ export const urlCheck = (url: string) => {
     const pattern = /(ftp|http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/;
     return pattern.test(url);
 }
+
+export const getEnv = <T>(key: string, defaultValue?: T) => {
+    return process.env[key] || (defaultValue || '');
+}

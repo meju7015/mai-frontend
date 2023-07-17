@@ -1,8 +1,5 @@
-import useRouteParams from "@/@core/hooks/useRouteParams";
-import {useRecoilState} from "recoil";
-import {authUserState} from "@/pages/auth/store/atoms";
 import {useEffect} from "react";
-import {GetServerSideProps} from "next";
+import {GetServerSideProps} from "next/types";
 
 export interface IGoogleCallbackParams {
     email: string;
@@ -21,19 +18,14 @@ export const getServerSideProps: GetServerSideProps = async ({ query }) => {
 }
 
 const GoogleCallback = (props: IGoogleCallbackParams) => {
-    //** store
-    const [authUser, setAuthUser] = useRecoilState(authUserState);
-
     //** Effect
     useEffect(() => {
-        if (props.jwt) setAuthUser(props);
+        window.opener.postMessage(props, window.location.origin);
     }, [])
 
-    return <div>
-        <pre>
-            {JSON.stringify(authUser)}
-        </pre>
-    </div>;
+    return <></>;
 }
+
+GoogleCallback.guestGuard = true;
 
 export default GoogleCallback
