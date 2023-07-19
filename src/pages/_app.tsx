@@ -55,7 +55,7 @@ function App(props: ExtendedAppProps) {
             <AuthProvider>
                 <Guard authGuard={authGuard} guestGuard={guestGuard}>
                     <ThemeProvider theme={theme}>
-                        <main className={[notoSansKr.className, roboto.variable].join('')}>
+                        <main className={[notoSansKr.className, roboto.variable].join(' ')}>
                             <Component {...pageProps} />
                         </main>
                     </ThemeProvider>

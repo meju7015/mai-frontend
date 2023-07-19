@@ -19,7 +19,7 @@ export interface IUser {
     deletedAt?: Date | null;
 }
 
-export interface IUserSetting {
+export interface IChatbotSetting {
     projectName: string;
     basePrompt: string;
     modelName: string;
@@ -41,12 +41,13 @@ export interface IUserChatbot {
     alignment: string;
     profilePicture?: IAsset;
     userProfilePicture?: IAsset;
+    setting: IChatbotSetting
 }
 
 export interface IAuthUserMe {
     user: IUser;
-    setting: IUserSetting;
-    chatbot: IUserChatbot;
+    setting: IChatbotSetting;
+    chatbots: IUserChatbot[];
 }
 
 export const authUserState: RecoilState<IAuthUser> = atom({

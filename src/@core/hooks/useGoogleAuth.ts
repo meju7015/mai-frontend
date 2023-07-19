@@ -1,18 +1,24 @@
 import {useEffect, useRef, useState} from "react";
 import {getEnv} from "@/@core/utils";
-import {IAuthUser, meState} from "@/pages/auth/store/atoms";
-import {useRecoilState} from "recoil";
+import {IAuthUser} from "@/pages/auth/store/atoms";
 import Storage from "@/@core/utils/StorageUtil";
 import {authConfig} from "@/@core/config/authConfig";
 import {useRouter} from "next/router";
+import {useAuth} from "@/@core/hooks/useAuth";
+import Cookies from 'js-cookie';
 
 type GoogleAuthCallback = (authUser: IAuthUser) => void;
 
 const useGoogleAuth = () => {
-    const loginCallback = useRef<GoogleAuthCallback>();
-    const [popup, setPopup] = useState<Window | null>();
-    const [me, setMe] = useRecoilState(meState);
+    // ** Hooks
     const router = useRouter();
+    const auth = useAuth();
+
+    // ** Refs
+    const loginCallback = useRef<GoogleAuthCallback>();
+
+    // ** States
+    const [popup, setPopup] = useState<Window | null>();
 
     useEffect(() => {
         if (!popup) return;
@@ -46,6 +52,8 @@ const useGoogleAuth = () => {
         }
 
         if (e.data?.jwt) {
+            auth.setJwt(e.data.jwt);
+            Cookies.set('jwt', e.data.jwt)
             Storage.setItem(authConfig.storageTokenKeyName, e.data.jwt);
             const returnUrl = router.query.returnUrl;
             const redirectURL = returnUrl && returnUrl !== '/' ? returnUrl : '/';

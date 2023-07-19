@@ -16,10 +16,13 @@ type Props = {
 }
 
 const defaultProvider: AuthValuesType = {
+    me: null,
     jwt: null,
     user: null,
     loading: true,
+    setMe: () => null,
     setUser: () => null,
+    setJwt: () => null,
     setLoading: () => Boolean,
     logout: () => Promise.resolve(),
     login: () => Promise.resolve(),
@@ -52,7 +55,7 @@ const AuthProvider = ({ children }: Props) => {
                 .then(async response => {
                     setLoading(false);
                     setJwt(storedToken);
-                    setMe(response.data);
+                    setMe(response.data.data);
                 })
                 .catch(() => {
                     Storage.removeItem(authConfig.storageTokenKeyName)
@@ -99,9 +102,12 @@ const AuthProvider = ({ children }: Props) => {
     }
 
     const values: AuthValuesType = {
+        me,
         jwt,
         user,
         loading,
+        setMe,
+        setJwt,
         setUser,
         setLoading,
         login: handleLogin,
