@@ -41,7 +41,7 @@ const MyChatbotCardItem = (props: IMyChatbotCardItemProps) => {
                     <Icon icon='mingcute:chat-4-line' width={60} height={60}/>
                 )}
             </CardMedia>
-            <Typography variant='subtitle2'>{chatbot.displayName}</Typography>
+            <Typography variant='subtitle2'>{chatbot.setting.projectName}</Typography>
         </Card>
     )
 }

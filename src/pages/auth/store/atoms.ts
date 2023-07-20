@@ -29,7 +29,7 @@ export interface IChatbotSetting {
 }
 
 export interface IUserChatbot {
-    id: string;
+    id?: string;
     numberOfCharacters: number;
     startMessage?: string;
     suggestedMessage?: string;

@@ -1,4 +1,3 @@
-import {GetServerSideProps} from "next/types";
 import {Container, styled} from "@mui/system";
 import Box from "@mui/material/Box";
 import {MenuItem, Select, Slider, Stack, Typography} from "@mui/material";
@@ -11,34 +10,10 @@ import InputTitle from "@/@core/components/text/InputTitle";
 import InputFooter from "@/@core/components/text/InputFooter";
 import CustomButton from "@/@core/components/button";
 import useToast from "@/@core/hooks/useToast";
-import {updateChatbot} from "@/@core/api/chatbot-api";
-import {useEffect} from "react";
 import {useRouter} from "next/router";
 
-export interface IChatbotPageParams {
-    chatbotId: string;
-    chatbot: IUserChatbot;
-}
-
-export const getServerSideProps: GetServerSideProps = async ({ req, query }) => {
-    const jwt = req.cookies.jwt;
-    const chatbotId = query.chatbotId;
-
-    if (!jwt || !chatbotId) {
-        return { notFound: true }
-    }
-
-    const response = await fetch(`${process.env.NEXT_BACKEND_URL}/chatbot/${chatbotId}`, {
-        headers: { Authorization: `Bearer ${jwt}` }
-    })
-    const chatbot = await response.json();
-
-    return {
-        props: { chatbotId, chatbot: chatbot.data }
-    }
-}
-
 const schema = yup.object().shape({
+    numberOfCharacters: yup.number(),
     displayName: yup.string(),
     startMessage: yup.string(),
     suggestedMessage: yup.string().nullable(),
@@ -50,6 +25,7 @@ const schema = yup.object().shape({
         basePrompt: yup.string().required(),
         modelName: yup.string(),
         temperature: yup.number(),
+        visibility: yup.boolean(),
     })
 })
 
@@ -60,10 +36,27 @@ const TinyText = styled(Typography)({
     letterSpacing: 0.2,
 });
 
+const defaultChatbot = {
+    numberOfCharacters: 0,
+    startMessage: '안녕하세요',
+    theme: 'light',
+    isShowProfile: false,
+    displayName: '',
+    userMessageColor: '#000000',
+    isShowUserProfile: false,
+    alignment: 'left',
+    setting: {
+        projectName: '',
+        basePrompt: '',
+        modelName: 'gpt3.5-turbo',
+        temperature: 1,
+        visibility: true,
+        domain: '',
+    }
+}
 
-const ChatBotPage = (props: IChatbotPageParams) => {
-    const { chatbotId, chatbot } = props;
 
+const CreateChatbotPage = () => {
     const { toast } = useToast();
     const router = useRouter();
 
@@ -74,16 +67,13 @@ const ChatBotPage = (props: IChatbotPageParams) => {
         formState: { errors, isLoading, isSubmitting },
     } = useForm({
         mode: 'onBlur',
-        defaultValues: chatbot,
+        defaultValues: defaultChatbot,
         // @ts-ignore
         resolver: yupResolver(schema),
     })
 
-    useEffect(() => {
-    }, [isSubmitting])
-
     const onSubmit = async (data: IUserChatbot) => {
-        updateChatbot(chatbotId, data)
+        /*updateChatbot(chatbotId, data)
             .then(() => {
                 toast('수정되었습니다.', 'success');
             })
@@ -91,7 +81,7 @@ const ChatBotPage = (props: IChatbotPageParams) => {
                 if (response.data) {
                     toast(response.data.message.join('\n'), 'error');
                 }
-            })
+            })*/
     }
 
     const handleBackButton = () => {
@@ -103,18 +93,18 @@ const ChatBotPage = (props: IChatbotPageParams) => {
             <form noValidate autoComplete='off' onSubmit={handleSubmit(onSubmit)}>
                 <Box sx={{display: 'flex'}} justifyContent='space-between'>
                     <Box>
-                        <Typography variant='h4' sx={{fontWeight: 600}}>{chatbot.setting.projectName}</Typography>
+                        <Typography variant='h4' sx={{fontWeight: 600}}>새로운 챗봇 생성</Typography>
                     </Box>
                 </Box>
                 <Box sx={{display: 'flex', flexDirection: 'column', mt: 5}} gap={3}>
-                    <Stack gap={1}>
+                    {/*<Stack gap={1}>
                         <InputTitle>챗봇 아이디</InputTitle>
                         <Typography sx={{fontWeight: 600}}>{chatbot.id}</Typography>
-                    </Stack>
+                    </Stack>*/}
 
                     <Stack gap={1}>
                         <InputTitle>학습한 문자 수</InputTitle>
-                        <Typography sx={{fontWeight: 600}}>{chatbot.numberOfCharacters}</Typography>
+                        <Typography sx={{fontWeight: 600}}>0</Typography>
                     </Stack>
 
                     <Stack gap={1}>
@@ -257,7 +247,7 @@ const ChatBotPage = (props: IChatbotPageParams) => {
                     </Stack>
 
                     <Stack gap={1}>
-                        <Controller
+                        {/*<Controller
                             name='suggestedMessage'
                             control={control}
                             rules={{ required: true }}
@@ -275,7 +265,7 @@ const ChatBotPage = (props: IChatbotPageParams) => {
                                     {...(errors.suggestedMessage && { helperText: errors.suggestedMessage.message })}
                                 />
                             )}
-                        />
+                        />*/}
                     </Stack>
                 </Box>
                 <Box sx={{display: 'flex', flexDirection: 'column', mt: 5, mb: 5}} gap={3}>
@@ -289,4 +279,4 @@ const ChatBotPage = (props: IChatbotPageParams) => {
     )
 }
 
-export default ChatBotPage;
+export default CreateChatbotPage;

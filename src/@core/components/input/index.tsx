@@ -1,8 +1,13 @@
 import {styled} from "@mui/system";
 import {TextField, TextFieldProps} from "@mui/material";
-import InputTitle from "@/@core/components/text/input-title";
+import InputTitle from "@/@core/components/text/InputTitle";
+import InputFooter from "@/@core/components/text/InputFooter";
 
-const StyledInput = styled(TextField)<TextFieldProps>(({size, theme}) => ({
+type CustomTextFieldProps = TextFieldProps | {
+    footerText?: string;
+}
+
+const StyledInput = styled(TextField)<CustomTextFieldProps>(({size, theme}) => ({
     transition: 'all 0.2s ease-in-out',
     //padding: '10px 12px 10px 12px',
     borderRadius: 7,
@@ -28,6 +33,7 @@ const CustomInput = (props: any) => {
         <>
             {props.title && <InputTitle>{props.title}</InputTitle>}
             <StyledInput {...props} />
+            {props.footerText && <InputFooter>{props.footerText}</InputFooter>}
         </>
     )
 }

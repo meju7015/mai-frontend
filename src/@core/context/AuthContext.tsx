@@ -55,7 +55,6 @@ const AuthProvider = ({ children }: Props) => {
                 .then(async response => {
                     setLoading(false);
                     setJwt(storedToken);
-                    setMe(response.data.data);
                 })
                 .catch(() => {
                     Storage.removeItem(authConfig.storageTokenKeyName)

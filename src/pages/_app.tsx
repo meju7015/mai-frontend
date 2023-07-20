@@ -11,6 +11,7 @@ import AuthGuard from "@/@core/components/auth/AuthGuard";
 import {NextPage} from "next";
 import {EmotionCache} from "@emotion/react";
 import Spinner from "@/@core/components/spinner";
+import {SnackbarProvider} from "notistack";
 
 type GuardProps = {
     authGuard: boolean
@@ -52,15 +53,17 @@ function App(props: ExtendedAppProps) {
 
     return (
         <RecoilRoot>
-            <AuthProvider>
-                <Guard authGuard={authGuard} guestGuard={guestGuard}>
-                    <ThemeProvider theme={theme}>
-                        <main className={[notoSansKr.className, roboto.variable].join(' ')}>
-                            <Component {...pageProps} />
-                        </main>
-                    </ThemeProvider>
-                </Guard>
-            </AuthProvider>
+            <SnackbarProvider>
+                <AuthProvider>
+                    <Guard authGuard={authGuard} guestGuard={guestGuard}>
+                        <ThemeProvider theme={theme}>
+                            <main className={[notoSansKr.className, roboto.variable].join(' ')}>
+                                <Component {...pageProps} />
+                            </main>
+                        </ThemeProvider>
+                    </Guard>
+                </AuthProvider>
+            </SnackbarProvider>
         </RecoilRoot>
     );
 }
